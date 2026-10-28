@@ -4,8 +4,11 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    $kategori = App\Models\Kategori::orderBy('id_kategori')->pluck('nama_kategori', 'id_kategori');
+    $menu = App\Models\Produk::orderBy('tipe_produksi')->orderBy('nama_produk')->get()->groupBy('id_kategori');
+
+    return view('landing', compact('kategori', 'menu'));
+})->name('landing');
 
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
