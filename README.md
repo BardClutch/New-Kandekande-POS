@@ -17,6 +17,7 @@ Dibangun dengan Laravel 12, Blade, Alpine.js, dan Tailwind CSS.
 - [Menjalankan di komputer sendiri](#menjalankan-di-komputer-sendiri)
 - [Akun contoh](#akun-contoh)
 - [Struktur tampilan](#struktur-tampilan)
+- [Dokumen untuk kontributor](#dokumen-untuk-kontributor)
 
 ## Fitur
 
@@ -148,6 +149,11 @@ docs/screenshots               Gambar yang dipakai di README ini
 ```
 
 Menu di halaman depan dicocokkan dengan foto lewat nama produk (cheesecake, donat, roti sobek, kue ulang tahun). Produk lain memakai foto cadangan. Untuk foto sendiri, ganti berkas di `public/images/landing` dengan nama yang sama, atau ubah pencocokan di bagian atas `landing.blade.php`.
+
+## Dokumen untuk kontributor
+
+- [DESIGN.md](DESIGN.md): panduan desain lengkap (warna, huruf, komponen, pola halaman, mode siang dan malam, halaman depan).
+- [AGENTS.md](AGENTS.md): panduan kerja untuk kontributor dan agen pengodean (perintah, struktur, model data, hak akses, aturan tampilan, pengujian, Git, dan keamanan).
 
 ## Lisensi
 
