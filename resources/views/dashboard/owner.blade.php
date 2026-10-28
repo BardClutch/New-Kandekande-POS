@@ -1,262 +1,219 @@
-<!-- DASHBOARD KHUSUS OWNER (SUPER ADMIN) -->
-<div class="space-y-6">
-    <!-- Header Greeting & Status -->
-    <div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-purple-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-        <div class="absolute -right-8 -bottom-10 opacity-10 pointer-events-none">
-            <svg class="w-64 h-64 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+<!-- DASHBOARD KHUSUS OWNER -->
+@php
+    $perluTindakan = count($bahanMenipis) + count($produkMenipis);
+    $terlarisMax = max(1, (int) ($produkTerlaris->max('total_terjual') ?? 1));
+    \Carbon\Carbon::setLocale('id');
+@endphp
+
+<div class="space-y-10">
+    <!-- Sapaan -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+        <div class="min-w-0">
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::now()->translatedFormat('l, j F Y') }}</p>
+            <h1 class="mt-1 font-display text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.05] text-gray-900 dark:text-gray-50 break-words">
+                Halo, {{ Auth::user()->name }}
+            </h1>
         </div>
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="min-w-0 flex-1">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-white/20 backdrop-blur-md text-white mb-2">
-                    👑 Owner Control Center
-                </span>
-                <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                    Halo, {{ Auth::user()->name }}! 👋
-                </h1>
-                <p class="text-indigo-100 text-xs sm:text-sm mt-1 max-w-xl leading-relaxed">
-                    Ringkasan performa finansial, tren penjualan, dan pemantauan menyeluruh toko bakery Anda hari ini.
-                </p>
-            </div>
-            <div class="flex items-center gap-2.5 self-start md:self-auto flex-shrink-0 flex-nowrap">
-                <a href="{{ route('laporan.index') }}" class="px-4 py-2.5 bg-white text-indigo-700 hover:bg-indigo-50 font-extrabold text-xs rounded-2xl shadow-md transition-all flex items-center gap-1.5 whitespace-nowrap">
-                    📊 Laporan Lengkap
-                </a>
-                <a href="{{ route('pelanggan.index') }}" class="px-4 py-2.5 bg-indigo-900/40 hover:bg-indigo-900/60 text-white font-extrabold text-xs rounded-2xl border border-white/20 backdrop-blur-md transition-all flex items-center gap-1.5 whitespace-nowrap">
-                    👥 Daya Pelanggan
-                </a>
-            </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+            <a href="{{ route('laporan.index') }}" class="inline-flex items-center gap-2 rounded-full bg-gray-900 dark:bg-gray-100 text-gray-50 dark:text-gray-900 h-[2.625rem] px-5 text-sm font-semibold hover:bg-indigo-600 dark:hover:bg-indigo-400 dark:hover:text-gray-900 transition-colors">
+                Laporan lengkap
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+            </a>
+            <a href="{{ route('pelanggan.index') }}" class="inline-flex items-center rounded-full border border-gray-300 dark:border-gray-700 h-[2.625rem] px-5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-gray-300 transition-colors">
+                Pelanggan
+            </a>
         </div>
     </div>
 
-    <!-- Alert Stok Menipis -->
-    @if(count($bahanMenipis) > 0 || count($produkMenipis) > 0)
-        <div class="bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-500 p-5 rounded-2xl shadow-sm transition-colors duration-300">
-            <div class="flex items-start gap-4">
-                <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex-shrink-0">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
-                </div>
-                <div class="flex-1">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <div>
-                            <h4 class="font-extrabold text-amber-900 dark:text-amber-200 text-sm sm:text-base">⚠️ Peringatan Stok Menipis (Di Bawah Batas Aman)</h4>
-                            <p class="text-xs text-amber-700 dark:text-amber-300 mt-0.5">Terdapat bahan baku atau etalase produk yang perlu diisi ulang / diproduksi.</p>
-                        </div>
-                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-200/60 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 self-start sm:self-auto">
-                            {{ count($bahanMenipis) + count($produkMenipis) }} Item Perlu Tindakan
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                        @foreach($bahanMenipis as $bahan)
-                        <div class="bg-white dark:bg-gray-800 p-3.5 rounded-xl border border-amber-200/80 dark:border-amber-800/50 flex items-center justify-between shadow-sm">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                    Bahan
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-gray-800 dark:text-gray-100">{{ $bahan->nama_bahan }}</p>
-                                    <p class="text-xs text-red-600 dark:text-red-400 font-semibold">
-                                        Sisa: {{ $bahan->jumlah_stok }} {{ $bahan->satuan }} <span class="text-gray-400 font-normal">(Min: {{ $bahan->stok_minimum }})</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <a href="{{ route('restock.index') }}" class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800/60 text-xs font-bold transition-colors flex items-center gap-1 border border-indigo-200 dark:border-indigo-800">
-                                + Restock
-                            </a>
-                        </div>
-                        @endforeach
-
-                        @foreach($produkMenipis as $produk)
-                        <div class="bg-white dark:bg-gray-800 p-3.5 rounded-xl border border-amber-200/80 dark:border-amber-800/50 flex items-center justify-between shadow-sm">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                    Roti
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-gray-800 dark:text-gray-100">{{ $produk->nama_produk }}</p>
-                                    <p class="text-xs text-amber-600 dark:text-amber-400 font-semibold">
-                                        Sisa: {{ $produk->stok_etalase }} pcs <span class="text-gray-400 font-normal">(Min: {{ $produk->stok_minimum }})</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <a href="{{ route('dapur.index') }}" class="px-3 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-800/60 text-xs font-bold transition-colors flex items-center gap-1 border border-orange-200 dark:border-orange-800">
-                                🔥 Produksi
-                            </a>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
+    <!-- Angka utama -->
+    <dl class="grid grid-cols-2 lg:grid-cols-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 divide-x divide-y lg:divide-y-0 divide-gray-200 dark:divide-gray-700 overflow-hidden">
+        <div class="p-5 sm:p-6">
+            <dt class="text-sm text-gray-500 dark:text-gray-400">Pendapatan hari ini</dt>
+            <dd class="mt-2 font-display text-2xl sm:text-3xl font-extrabold tabular-nums text-gray-900 dark:text-gray-50">
+                <span class="text-base font-semibold text-gray-400 mr-0.5">Rp</span>{{ number_format($pendapatanHariIni, 0, ',', '.') }}
+            </dd>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ $pesananHariIni }} transaksi masuk</p>
         </div>
+        <div class="p-5 sm:p-6">
+            <dt class="text-sm text-gray-500 dark:text-gray-400">Omset bulan ini</dt>
+            <dd class="mt-2 font-display text-2xl sm:text-3xl font-extrabold tabular-nums text-gray-900 dark:text-gray-50">
+                <span class="text-base font-semibold text-gray-400 mr-0.5">Rp</span>{{ number_format($pendapatanBulanIni, 0, ',', '.') }}
+            </dd>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::now()->translatedFormat('F Y') }}</p>
+        </div>
+        <div class="p-5 sm:p-6">
+            <dt class="text-sm text-gray-500 dark:text-gray-400">Antrean dapur</dt>
+            <dd class="mt-2 font-display text-2xl sm:text-3xl font-extrabold tabular-nums text-gray-900 dark:text-gray-50">
+                {{ $pesananDapurAktif }}<span class="ml-1.5 text-base font-semibold text-gray-400">pesanan</span>
+            </dd>
+            <a href="{{ route('dapur.index') }}" class="mt-1 inline-block text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4">Buka dapur</a>
+        </div>
+        <div class="p-5 sm:p-6">
+            <dt class="text-sm text-gray-500 dark:text-gray-400">Pelanggan terdaftar</dt>
+            <dd class="mt-2 font-display text-2xl sm:text-3xl font-extrabold tabular-nums text-gray-900 dark:text-gray-50">
+                {{ $totalPelanggan }}<span class="ml-1.5 text-base font-semibold text-gray-400">orang</span>
+            </dd>
+            <a href="{{ route('pelanggan.index') }}" class="mt-1 inline-block text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4">Lihat daftar</a>
+        </div>
+    </dl>
+
+    <!-- Stok menipis -->
+    @if($perluTindakan > 0)
+        <section>
+            <div class="flex items-baseline justify-between gap-4 mb-3">
+                <h2 class="font-display text-xl font-extrabold text-gray-900 dark:text-gray-50">
+                    Perlu tindakan <span class="ml-1 text-base font-semibold text-red-600 dark:text-red-400">{{ $perluTindakan }}</span>
+                </h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">Stok di bawah batas minimum</p>
+            </div>
+            <ul class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 max-h-80 overflow-y-auto custom-scrollbar">
+                @foreach($bahanMenipis as $bahan)
+                    <li class="flex items-center justify-between gap-4 px-5 py-3.5">
+                        <div class="min-w-0">
+                            <p class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ $bahan->nama_bahan }}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Bahan baku · sisa <span class="font-semibold text-red-600 dark:text-red-400 tabular-nums">{{ $bahan->jumlah_stok }} {{ $bahan->satuan }}</span>, minimum {{ $bahan->stok_minimum }}
+                            </p>
+                        </div>
+                        <a href="{{ route('restock.index') }}" class="flex-shrink-0 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4">Restock</a>
+                    </li>
+                @endforeach
+                @foreach($produkMenipis as $produk)
+                    <li class="flex items-center justify-between gap-4 px-5 py-3.5">
+                        <div class="min-w-0">
+                            <p class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ $produk->nama_produk }}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Etalase · sisa <span class="font-semibold text-amber-600 dark:text-amber-400 tabular-nums">{{ $produk->stok_etalase }} pcs</span>, minimum {{ $produk->stok_minimum }}
+                            </p>
+                        </div>
+                        <a href="{{ route('dapur.index') }}" class="flex-shrink-0 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4">Produksi</a>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
     @endif
 
-    <!-- 4 KPI Overview Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- 1. Pendapatan Hari Ini -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all p-5 border border-gray-100 dark:border-gray-700/80 border-l-4 border-l-emerald-500 relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">Pendapatan Hari Ini</p>
-                    <p class="text-2xl font-black text-gray-900 dark:text-white">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</p>
-                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{{ $pesananHariIni }} transaksi masuk</p>
-                </div>
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xl shadow-inner">
-                    💰
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. Pendapatan Bulan Ini -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all p-5 border border-gray-100 dark:border-gray-700/80 border-l-4 border-l-blue-500 relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-1">Omset Bulan Ini</p>
-                    <p class="text-2xl font-black text-gray-900 dark:text-white">Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}</p>
-                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Bulan {{ date('F Y') }}</p>
-                </div>
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xl shadow-inner">
-                    📈
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. Antrean Dapur Aktif -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all p-5 border border-gray-100 dark:border-gray-700/80 border-l-4 border-l-amber-500 relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1">Antrean Dapur Aktif</p>
-                    <p class="text-2xl font-black text-gray-900 dark:text-white">{{ $pesananDapurAktif }} <span class="text-sm font-normal text-gray-400">pesanan</span></p>
-                    <a href="{{ route('dapur.index') }}" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline mt-1 inline-block">Lihat Live Dapur &rarr;</a>
-                </div>
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xl shadow-inner">
-                    🍳
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. Total Pelanggan Terdaftar -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all p-5 border border-gray-100 dark:border-gray-700/80 border-l-4 border-l-purple-500 relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-1">Database Pelanggan</p>
-                    <p class="text-2xl font-black text-gray-900 dark:text-white">{{ $totalPelanggan }} <span class="text-sm font-normal text-gray-400">orang</span></p>
-                    <a href="{{ route('pelanggan.index') }}" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline mt-1 inline-block">Lihat Daya Beli &rarr;</a>
-                </div>
-                <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-xl shadow-inner">
-                    👥
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Charts & Best Sellers -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Grafik Penjualan 7 Hari Terakhir -->
-        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 lg:col-span-2 transition-colors">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h3 class="text-base font-extrabold text-gray-800 dark:text-gray-100">Tren Penjualan (7 Hari Terakhir)</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Grafik dinamika omset harian toko</p>
-                </div>
-                <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs rounded-full font-bold">
-                    Minggu Ini
-                </span>
+    <!-- Tren & terlaris -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <section class="xl:col-span-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-5 sm:p-6">
+            <div class="mb-5">
+                <h2 class="font-display text-xl font-extrabold text-gray-900 dark:text-gray-50">Penjualan 7 hari terakhir</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Omset harian toko</p>
             </div>
             <div class="relative h-72 w-full">
                 <canvas id="salesChart"></canvas>
             </div>
-        </div>
+        </section>
 
-        <!-- Produk Terlaris -->
-        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h3 class="text-base font-extrabold text-gray-800 dark:text-gray-100">🏆 Menu Terlaris</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Paling diminati pelanggan</p>
-                </div>
-                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">Top 5</span>
+        <section class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-5 sm:p-6">
+            <div class="mb-5">
+                <h2 class="font-display text-xl font-extrabold text-gray-900 dark:text-gray-50">Menu terlaris</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Lima teratas</p>
             </div>
-            <div class="space-y-4">
+            <ol class="space-y-4">
                 @forelse($produkTerlaris as $index => $item)
-                <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700">
-                    <div class="flex items-center space-x-3 min-w-0">
-                        <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 flex items-center justify-center font-extrabold text-xs flex-shrink-0">
-                            {{ $index + 1 }}
+                    <li>
+                        <div class="flex items-baseline justify-between gap-3">
+                            <p class="min-w-0 truncate font-semibold text-gray-900 dark:text-gray-100">
+                                <span class="mr-2 text-gray-400 tabular-nums">{{ $index + 1 }}</span>{{ $item->produk->nama_produk ?? 'Produk dihapus' }}
+                            </p>
+                            <span class="flex-shrink-0 text-sm font-semibold tabular-nums text-gray-700 dark:text-gray-300">{{ $item->total_terjual }} pcs</span>
                         </div>
-                        <div class="truncate">
-                            <p class="font-bold text-sm text-gray-800 dark:text-gray-200 truncate">{{ $item->produk->nama_produk ?? 'Produk Dihapus' }}</p>
-                            <p class="text-[11px] text-gray-400">{{ $item->produk->kategori->nama_kategori ?? 'Umum' }}</p>
+                        <div class="mt-1.5 h-1.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                            <div class="h-full rounded-full bg-indigo-600 dark:bg-indigo-400" style="width: {{ round(($item->total_terjual / $terlarisMax) * 100) }}%"></div>
                         </div>
-                    </div>
-                    <div class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-extrabold px-2.5 py-1 rounded-full text-xs border border-emerald-100 dark:border-emerald-800/50 whitespace-nowrap ml-2">
-                        {{ $item->total_terjual }} pcs
-                    </div>
-                </div>
+                        <p class="mt-1 text-xs text-gray-400">{{ $item->produk->kategori->nama_kategori ?? 'Umum' }}</p>
+                    </li>
                 @empty
-                <div class="text-center py-12 text-gray-400 text-xs">
-                    Belum ada data penjualan tercatat.
-                </div>
+                    <li class="py-10 text-center text-sm text-gray-400">Belum ada penjualan tercatat.</li>
                 @endforelse
-            </div>
-        </div>
+            </ol>
+        </section>
     </div>
 </div>
 
-<!-- Chart.js Script for Owner -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('salesChart')?.getContext('2d');
-        if (!ctx) return;
-        
+    document.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById('salesChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
         const labels = {!! json_encode($grafikTanggal) !!};
         const data = {!! json_encode($grafikPendapatan) !!};
 
-        new Chart(ctx, {
+        const palette = () => {
+            const dark = document.documentElement.classList.contains('dark');
+            return {
+                line: dark ? '#F08A57' : '#D4501E',
+                fill: dark ? 'rgba(240,138,87,.14)' : 'rgba(212,80,30,.10)',
+                grid: dark ? 'rgba(243,238,231,.08)' : 'rgba(27,22,18,.07)',
+                tick: dark ? '#A39A91' : '#7D756C',
+            };
+        };
+
+        const c = palette();
+        const chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
                     label: 'Pendapatan (Rp)',
                     data: data,
-                    borderColor: '#4f46e5', // indigo-600
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    borderWidth: 3,
-                    tension: 0.35,
+                    borderColor: c.line,
+                    backgroundColor: c.fill,
+                    borderWidth: 2.5,
+                    tension: 0.3,
                     fill: true,
-                    pointBackgroundColor: '#4f46e5',
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: c.line,
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
+                        displayColors: false,
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 return 'Rp ' + (context.parsed.y || 0).toLocaleString('id-ID');
                             }
                         }
                     }
                 },
                 scales: {
+                    x: { grid: { display: false }, border: { display: false }, ticks: { color: c.tick } },
                     y: {
                         beginAtZero: true,
+                        suggestedMax: data.some(v => v > 0) ? undefined : 100000,
+                        border: { display: false },
+                        grid: { color: c.grid },
                         ticks: {
-                            callback: function(value) {
-                                if (value >= 1000000) return 'Rp ' + (value / 1000000) + 'jt';
-                                if (value >= 1000) return 'Rp ' + (value / 1000) + 'rb';
+                            color: c.tick,
+                            maxTicksLimit: 5,
+                            callback: function (value) {
+                                if (value >= 1000000) return 'Rp ' + (value / 1000000) + ' jt';
+                                if (value >= 1000) return 'Rp ' + (value / 1000) + ' rb';
                                 return 'Rp ' + value;
                             }
                         }
                     }
                 }
             }
+        });
+
+        window.addEventListener('theme-changed', function () {
+            const p = palette();
+            const ds = chart.data.datasets[0];
+            ds.borderColor = p.line; ds.backgroundColor = p.fill; ds.pointHoverBackgroundColor = p.line;
+            chart.options.scales.x.ticks.color = p.tick;
+            chart.options.scales.y.ticks.color = p.tick;
+            chart.options.scales.y.grid.color = p.grid;
+            chart.update();
         });
     });
 </script>

@@ -86,7 +86,7 @@
 <body>
 
     <div class="no-print">
-        <a href="javascript:window.print()" class="btn-print">🖨️ Cetak Struk Shift Ini</a>
+        <a href="javascript:window.print()" class="btn-print">Cetak Struk Shift Ini</a>
     </div>
 
     <div class="header text-center">

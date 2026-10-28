@@ -1,32 +1,17 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight transition-colors duration-300">
-            {{ __('Tambah Kategori Baru') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-xl border border-gray-100 dark:border-gray-700 p-8 transition-colors duration-300">
-                <form action="{{ route('kategori.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-6">
-                        <label for="nama_kategori" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 transition-colors">Nama Kategori</label>
-                        <input type="text" name="nama_kategori" id="nama_kategori" value="{{ old('nama_kategori') }}" class="shadow-sm appearance-none border border-gray-300 dark:border-gray-600 rounded-lg w-full py-3 px-4 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors @error('nama_kategori') border-red-500 dark:border-red-500 focus:ring-red-500 @enderror" placeholder="Misal: Kue Basah" required>
-                        @error('nama_kategori')
-                            <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="flex items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700 transition-colors">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition-all shadow-sm">
-                            Simpan Kategori
-                        </button>
-                        <a href="{{ route('kategori.index') }}" class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
-                            Batal
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <x-page title="Tambah kategori" narrow>
+        <x-panel>
+            <form action="{{ route('kategori.store') }}" method="POST" class="space-y-6">
+                @csrf
+                <div class="fld">
+                    <label for="nama_kategori">Nama kategori</label>
+                    <input type="text" name="nama_kategori" id="nama_kategori" value="{{ old('nama_kategori') }}" class="inp" required autofocus>
+                </div>
+                <div class="flex items-center gap-4 pt-5 border-t border-gray-200 dark:border-gray-700">
+                    <x-btn type="submit">Simpan kategori</x-btn>
+                    <x-btn variant="link" :href="route('kategori.index')">Batal</x-btn>
+                </div>
+            </form>
+        </x-panel>
+    </x-page>
 </x-app-layout>
