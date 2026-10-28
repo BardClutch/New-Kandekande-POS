@@ -1,0 +1,1 @@
+<dl {{ $attributes->merge(['class' => 'grid grid-cols-2 lg:grid-cols-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 divide-x divide-y lg:divide-y-0 divide-gray-200 dark:divide-gray-700 overflow-hidden']) }}>{{ $slot }}</dl>
